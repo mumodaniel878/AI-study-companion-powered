@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Companion - Smart Notes Processing</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    header p {
+      font-size: 1.1em;
+      opacity: 0.95;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      animation: slideIn 0.6s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, #f093fb, #667eea);
+      border-radius: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1em;
+      font-family: inherit;
+      resize: vertical;
+      transition: all 0.3s ease;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      background: linear-gradient(rgba(255,255,255,1), rgba(102, 126, 234, 0.02));
+    }
+
+    .control-group {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    label {
+      color: #333;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="number"] {
+      width: 80px;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 0.95em;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #764ba2;
+      box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+    }
+
+    input[type="text"]::placeholder {
+      color: #aaa;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      color: white;
+      box-shadow: 0 10px 20px rgba(17, 153, 142, 0.3);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(17, 153, 142, 0.4);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #eb3349, #f45c43);
+      color: white;
+      box-shadow: 0 10px 20px rgba(235, 51, 73, 0.3);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(235, 51, 73, 0.4);
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      color: white;
+      box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+    }
+
+    .btn-export:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(240, 147, 251, 0.4);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #output {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 25px;
+      border-radius: 15px;
+      min-height: 200px;
+      overflow-y: auto;
+      border-left: 5px solid #667eea;
+    }
+
+    #output h3 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 1.3em;
+    }
+
+    #output p {
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .flashcard {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      border-left: 5px solid #f093fb;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .flashcard:hover {
+      transform: translateX(5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .flash-term {
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .flash-def {
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .output-panel {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 768px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 2em;
+      }
+
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+
+      textarea {
+        height: 150px;
+      }
+    }
+
+    .info-box {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-box h3 {
+      margin-bottom: 10px;
+      font-size: 1.1em;
+    }
+
+    .info-box p {
+      line-height: 1.5;
+      opacity: 0.95;
+    }
+
+    footer {
+      text-align: center;
+      color: white;
+      margin-top: 40px;
+      padding: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .feature-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>✨ Study Companion</h1>
+      <p>Transform your notes into summaries, flashcards, and Q&A with AI-powered processing</p>
+      <div style="margin-top: 15px;">
+        <span class="feature-badge">📝 Smart Summarization</span>
+        <span class="feature-badge">🎴 Flashcards</span>
+        <span class="feature-badge">❓ Q&A Generation</span>
+        <span class="feature-badge">🤖 AI Ready</span>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <!-- Input Panel -->
+      <div class="panel">
+        <h2>📚 Your Notes</h2>
+        <textarea id="notes" placeholder="Paste your study notes, article, or text here..."></textarea>
+        
+        <div class="control-group" style="margin-top: 20px;">
+          <label for="sentences">Output Count:</label>
+          <input type="number" id="sentences" value="5" min="1" max="20">
+        </div>
+
+        <div class="control-group">
+          <div class="checkbox-container">
+            <input type="checkbox" id="useAi">
+            <label for="useAi" style="margin: 0;">Use OpenAI (optional)</label>
+          </div>
+        </div>
+
+        <div class="control-group" id="apiKeyGroup" style="display: none;">
+          <input type="text" id="apiKey" placeholder="sk-... (your OpenAI API key)">
+        </div>
+
+        <div class="info-box" id="infoBox" style="display: none;">
+          <h3>🔑 OpenAI Setup</h3>
+          <p>Optional: Use your OpenAI API key for more advanced AI-powered summaries. Leave empty to use built-in processing.</p>
+        </div>
+      </div>
+
+      <!-- Actions Panel -->
+      <div class="panel">
+        <h2>⚡ Actions</h2>
+        
+        <div class="button-grid">
+          <button id="summarizeBtn" class="btn-primary">📄 Summarize</button>
+          <button id="flashBtn" class="btn-primary">🎴 Flashcards</button>
+          <button id="qnaBtn" class="btn-primary">❓ Questions</button>
+          <button id="exportBtn" class="btn-export">💾 Export JSON</button>
+          <button id="clearBtn" class="btn-danger" style="grid-column: 1 / -1;">🗑️ Clear All</button>
+        </div>
+
+        <div class="info-box">
+          <h3>💡 How to Use</h3>
+          <p><strong>1.</strong> Paste your notes in the text area<br>
+          <strong>2.</strong> Set the number of outputs (3-20)<br>
+          <strong>3.</strong> Click any action button<br>
+          <strong>4.</strong> View results and export if needed</p>
+        </div>
+      </div>
+
+      <!-- Output Panel -->
+      <div class="panel output-panel">
+        <h2>📊 Results</h2>
+        <div id="output">
+          <p style="color: #999; text-align: center;">Results will appear here...</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>🎓 Study Companion v1.0 | Created for enhanced learning and productivity</p>
+    </footer>
+  </div>
+
+  <script>
+    // Text Processing Functions
+    function cleanText(text){
+      return text.replace(/\s+/g,' ').trim();
+    }
+
+    function splitSentences(text){
+      const re = /[^.!?\n]+[.!?]?/g;
+      const matches = text.match(re) || [];
+      return matches.map(s=>s.trim()).filter(Boolean);
+    }
+
+    const STOPWORDS = new Set([
+      'the','is','in','and','to','of','a','that','it','on','for','as','with','are','was','were','be','by','this','an','or','from','at','but','which','we','they','their','has','have','had','not','you','your','i'
+    ]);
+
+    function wordFrequencies(text){
+      const words = text.toLowerCase().match(/[a-z0-9]+/g) || [];
+      const freqs = Object.create(null);
+      for(const w of words){
+        if(STOPWORDS.has(w)) continue;
+        freqs[w] = (freqs[w]||0)+1;
+      }
+      return freqs;
+    }
+
+    function scoreSentence(sentence, freqs){
+      const words = sentence.toLowerCase().match(/[a-z0-9]+/g) || [];
+      let score = 0;
+      for(const w of words){
+        if(freqs[w]) score += freqs[w];
+      }
+      return score;
+    }
+
+    function summarize(text, sentenceCount){
+      const cleaned = cleanText(text);
+      if(!cleaned) return '';
+      const sentences = splitSentences(cleaned);
+      if(sentences.length <= sentenceCount) return sentences.join(' ');
+
+      const freqs = wordFrequencies(cleaned);
+      const scored = sentences.map((s,i)=>({i, s, score: scoreSentence(s,freqs)}));
+      scored.sort((a,b)=>b.score - a.score || a.i - b.i);
+      const chosen = scored.slice(0, sentenceCount).sort((a,b)=>a.i-b.i).map(x=>x.s);
+      return chosen.join(' ');
+    }
+
+    function getTopKeywords(text, n){
+      const freqs = wordFrequencies(text);
+      const items = Object.keys(freqs).map(k=>({k,v:freqs[k]}));
+      items.sort((a,b)=>b.v-a.v);
+      return items.slice(0,n).map(x=>x.k);
+    }
+
+    function generateFlashcardsLocal(text, count){
+      const cleaned = cleanText(text);
+      const sentences = splitSentences(cleaned);
+      const keywords = getTopKeywords(cleaned, Math.max(5, count*2));
+      const cards = [];
+      for(let i=0;i<Math.min(count, sentences.length);i++){
+        const s = sentences[i];
+        const found = keywords.find(k=> new RegExp('\\b'+k+'\\b','i').test(s));
+        const term = found || keywords[i] || '';
+        cards.push({term: term, definition: s});
+      }
+      return cards;
+    }
+
+    function generateQuestionsLocal(text, count){
+      const cleaned = cleanText(text);
+      const sentences = splitSentences(cleaned);
+      const freqs = wordFrequencies(cleaned);
+      const wordsByFreq = Object.keys(freqs).sort((a,b)=>freqs[b]-freqs[a]);
+      const questions = [];
+      for(let i=0;i<Math.min(count, sentences.length);i++){
+        const s = sentences[i];
+        const target = wordsByFreq.find(w=> new RegExp('\\b'+w+'\\b','i').test(s));
+        if(target){
+          const cloze = s.replace(new RegExp('\\b'+target+'\\b','i'),'____');
+          questions.push({question: `Fill in the blank: ${cloze}`, answer: target});
+        } else {
+          questions.push({question: `Explain: ${s}`, answer: s});
+        }
+      }
+      return questions;
+    }
+
+    async function generateWithOpenAI(prompt, apiKey){
+      const url = 'https://api.openai.com/v1/chat/completions';
+      const body = {
+        model: 'gpt-3.5-turbo',
+        messages: [{role:'user', content: prompt}],
+        max_tokens: 500
+      };
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{
+          'Authorization': 'Bearer '+apiKey,
+          'Content-Type':'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      if(!res.ok){
+        const txt = await res.text();
+        throw new Error(`OpenAI error: ${res.status} ${txt}`);
+      }
+      const j = await res.json();
+      return j.choices?.[0]?.message?.content || '';
+    }
+
+    // UI Initialization
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const notes = document.getElementById('notes');
+      const out = document.getElementById('output');
+      const summarizeBtn = document.getElementById('summarizeBtn');
+      const flashBtn = document.getElementById('flashBtn');
+      const qnaBtn = document.getElementById('qnaBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const exportBtn = document.getElementById('exportBtn');
+      const sentences = document.getElementById('sentences');
+      const useAi = document.getElementById('useAi');
+      const apiKeyInput = document.getElementById('apiKey');
+      const apiKeyGroup = document.getElementById('apiKeyGroup');
+      const infoBox = document.getElementById('infoBox');
+
+      let lastResults = null;
+
+      // Toggle AI options
+      useAi.addEventListener('change', ()=>{
+        apiKeyGroup.style.display = useAi.checked ? 'flex' : 'none';
+        infoBox.style.display = useAi.checked ? 'block' : 'none';
+      });
+
+      summarizeBtn.addEventListener('click', async ()=>{
+        const text = notes.value;
+        const n = parseInt(sentences.value,10) || 3;
+        if(!text.trim()){
+          out.innerHTML = '<p style="color:#ef4444">❌ Please paste some notes first.</p>';
+          return;
+        }
+        out.innerHTML = '<p style="color:#667eea;">⏳ Generating summary…</p>';
+        setTimeout(async ()=>{
+          try{
+            let s='';
+            if(useAi.checked && apiKeyInput.value.trim()){
+              const prompt = `Summarize the following notes in ${n} concise sentences:\n\n${text}`;
+              const ai = await generateWithOpenAI(prompt, apiKeyInput.value.trim());
+              s = ai.trim();
+            } else {
+              s = summarize(text, n);
+            }
+            lastResults = {type:'summary', content: s};
+            out.innerHTML = s ? `<p style="color:#333; line-height: 1.8;">📝 <strong>Summary:</strong><br><br>${escapeHtml(s)}</p>` : '<p>No summary generated.</p>';
+          }catch(err){
+            out.innerHTML = `<p style="color:#ef4444">❌ Error: ${escapeHtml(err.message)}</p>`;
+          }
+        }, 150);
+      });
+
+      flashBtn.addEventListener('click', async ()=>{
+        const text = notes.value;
+        const n = parseInt(sentences.value,10) || 5;
+        if(!text.trim()){
+          out.innerHTML = '<p style="color:#ef4444">❌ Please paste some notes first.</p>';
+          return;
+        }
+        out.innerHTML = '<p style="color:#667eea;">⏳ Generating flashcards…</p>';
+        setTimeout(async ()=>{
+          try{
+            let cards = [];
+            if(useAi.checked && apiKeyInput.value.trim()){
+              const prompt = `Generate ${n} concise flashcards (term -> definition) from the following notes. Output as JSON array of objects with keys term and definition:\n\n${text}`;
+              const ai = await generateWithOpenAI(prompt, apiKeyInput.value.trim());
+              try{ cards = JSON.parse(ai); }catch(e){
+                const m = ai.match(/\[[\s\S]*\]/);
+                if(m) cards = JSON.parse(m[0]); else throw e;
+              }
+            } else {
+              cards = generateFlashcardsLocal(text, n);
+            }
+            lastResults = {type:'flashcards', content: cards};
+            out.innerHTML = `<h3>🎴 Flashcards (${cards.length})</h3>${cards.map((c,i)=>`<div class="flashcard"><div class="flash-term">#${i+1}: ${escapeHtml(c.term)}</div><div class="flash-def">${escapeHtml(c.definition)}</div></div>`).join('')}`;
+          }catch(err){
+            out.innerHTML = `<p style="color:#ef4444">❌ Error: ${escapeHtml(err.message)}</p>`;
+          }
+        }, 150);
+      });
+
+      qnaBtn.addEventListener('click', async ()=>{
+        const text = notes.value;
+        const n = parseInt(sentences.value,10) || 5;
+        if(!text.trim()){
+          out.innerHTML = '<p style="color:#ef4444">❌ Please paste some notes first.</p>';
+          return;
+        }
+        out.innerHTML = '<p style="color:#667eea;">⏳ Generating questions…</p>';
+        setTimeout(async ()=>{
+          try{
+            let qas = [];
+            if(useAi.checked && apiKeyInput.value.trim()){
+              const prompt = `Create ${n} questions and answers (JSON array of objects with question and answer) from these notes:\n\n${text}`;
+              const ai = await generateWithOpenAI(prompt, apiKeyInput.value.trim());
+              try{ qas = JSON.parse(ai); }catch(e){
+                const m = ai.match(/\[[\s\S]*\]/);
+                if(m) qas = JSON.parse(m[0]); else throw e;
+              }
+            } else {
+              qas = generateQuestionsLocal(text, n);
+            }
+            lastResults = {type:'qa', content: qas};
+            out.innerHTML = `<h3>❓ Q&A (${qas.length})</h3>${qas.map((q,i)=>`<div class="flashcard"><div class="flash-term">#${i+1} Q: ${escapeHtml(q.question)}</div><div class="flash-def"><strong>A:</strong> ${escapeHtml(q.answer)}</div></div>`).join('')}`;
+          }catch(err){
+            out.innerHTML = `<p style="color:#ef4444">❌ Error: ${escapeHtml(err.message)}</p>`;
+          }
+        }, 150);
+      });
+
+      clearBtn.addEventListener('click', ()=>{
+        notes.value = '';
+        out.innerHTML = '<p style="color: #999; text-align: center;">Results will appear here...</p>';
+        lastResults = null;
+      });
+
+      exportBtn.addEventListener('click', ()=>{
+        if(!lastResults){ 
+          out.innerHTML = '<p style="color:#ef4444">❌ No results to export.</p>'; 
+          return; 
+        }
+        const data = JSON.stringify(lastResults, null, 2);
+        const blob = new Blob([data], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${lastResults.type || 'export'}_${new Date().toISOString().slice(0,10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        out.innerHTML = `<p style="color:#11998e;">✅ Exported as ${a.download}</p>`;
+      });
+    });
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, function(m){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];});
+    }
+  </script>
+</body>
+</html>
